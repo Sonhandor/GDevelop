@@ -130,12 +130,12 @@ gd::String EventsCodeGenerator::GenerateEventsFunctionCode(
     std::set<gd::String>& includeFiles,
     bool compilationForRuntime) {
   gd::ObjectsContainer parameterObjectsAndGroups;
+  gd::VariablesContainer parameterVariablesContainer(
+      gd::VariablesContainer::SourceType::Parameters);
   auto projectScopedContainers = gd::ProjectScopedContainers::
       MakeNewProjectScopedContainersForFreeEventsFunction(
-          project,
-          eventsFunctionsExtension,
-          eventsFunction,
-          parameterObjectsAndGroups);
+          project, eventsFunctionsExtension, eventsFunction,
+          parameterObjectsAndGroups, parameterVariablesContainer);
 
   EventsCodeGenerator codeGenerator(projectScopedContainers);
   codeGenerator.SetCodeNamespace(codeNamespace);
@@ -185,13 +185,15 @@ gd::String EventsCodeGenerator::GenerateBehaviorEventsFunctionCode(
     std::set<gd::String>& includeFiles,
     bool compilationForRuntime) {
   gd::ObjectsContainer parameterObjectsContainers;
+  gd::VariablesContainer parameterVariablesContainer(
+      gd::VariablesContainer::SourceType::Parameters);
+  gd::VariablesContainer propertyVariablesContainer(
+      gd::VariablesContainer::SourceType::Properties);
   auto projectScopedContainers = gd::ProjectScopedContainers::
       MakeNewProjectScopedContainersForBehaviorEventsFunction(
-          project,
-          eventsFunctionsExtension,
-          eventsBasedBehavior,
-          eventsFunction,
-          parameterObjectsContainers);
+          project, eventsFunctionsExtension, eventsBasedBehavior,
+          eventsFunction, parameterObjectsContainers,
+          parameterVariablesContainer, propertyVariablesContainer);
 
   EventsCodeGenerator codeGenerator(projectScopedContainers);
   codeGenerator.SetCodeNamespace(codeNamespace);
@@ -267,13 +269,15 @@ gd::String EventsCodeGenerator::GenerateObjectEventsFunctionCode(
     std::set<gd::String>& includeFiles,
     bool compilationForRuntime) {
   gd::ObjectsContainer parameterObjectsContainers;
+  gd::VariablesContainer parameterVariablesContainer(
+      gd::VariablesContainer::SourceType::Parameters);
+  gd::VariablesContainer propertyVariablesContainer(
+      gd::VariablesContainer::SourceType::Properties);
   auto projectScopedContainers = gd::ProjectScopedContainers::
       MakeNewProjectScopedContainersForObjectEventsFunction(
-          project,
-          eventsFunctionsExtension,
-          eventsBasedObject,
-          eventsFunction,
-          parameterObjectsContainers);
+          project, eventsFunctionsExtension, eventsBasedObject, eventsFunction,
+          parameterObjectsContainers, parameterVariablesContainer,
+          propertyVariablesContainer);
 
   EventsCodeGenerator codeGenerator(projectScopedContainers);
   codeGenerator.SetCodeNamespace(codeNamespace);

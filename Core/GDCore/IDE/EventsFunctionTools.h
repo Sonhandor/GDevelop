@@ -12,6 +12,9 @@ namespace gd {
 class Project;
 class EventsFunctionsContainer;
 class ObjectsContainer;
+class ParameterMetadataContainer;
+class PropertiesContainer;
+class VariablesContainer;
 class ParameterMetadata;
 class EventsFunction;
 class EventsBasedBehavior;
@@ -72,5 +75,13 @@ class GD_CORE_API EventsFunctionTools {
   static void CopyEventsBasedObjectChildrenToObjectsContainer(
       const gd::EventsBasedObject &eventsBasedObject,
       gd::ObjectsContainer &outputObjectsContainer);
+
+  static void ParametersToVariablesContainer(
+      const ParameterMetadataContainer &parameters,
+      gd::VariablesContainer &outputVariablesContainer);
+
+  static void PropertiesToVariablesContainer(
+      const PropertiesContainer &properties,
+      gd::VariablesContainer &outputVariablesContainer);
 };
 }  // namespace gd

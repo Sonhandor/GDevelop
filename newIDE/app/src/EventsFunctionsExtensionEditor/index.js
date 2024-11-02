@@ -154,6 +154,12 @@ export default class EventsFunctionsExtensionEditor extends React.Component<
   // (like ObjectGroupsList) because objects "ptr" changed.
   _globalObjectsContainer: gdObjectsContainer = new gd.ObjectsContainer();
   _objectsContainer: gdObjectsContainer = new gd.ObjectsContainer();
+  _parameterVariablesContainer: gdVariablesContainer = new gd.VariablesContainer(
+    gd.VariablesContainer.Parameters
+  );
+  _propertyVariablesContainer: gdVariablesContainer = new gd.VariablesContainer(
+    gd.VariablesContainer.Properties
+  );
   _projectScopedContainersAccessor: ProjectScopedContainersAccessor | null = null;
 
   componentDidMount() {
@@ -205,7 +211,9 @@ export default class EventsFunctionsExtensionEditor extends React.Component<
     };
     this._projectScopedContainersAccessor = new ProjectScopedContainersAccessor(
       scope,
-      this._objectsContainer
+      this._objectsContainer,
+      this._parameterVariablesContainer,
+      this._propertyVariablesContainer
     );
   };
 

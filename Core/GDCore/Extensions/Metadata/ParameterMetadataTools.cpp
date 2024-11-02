@@ -30,7 +30,8 @@ void ParameterMetadataTools::ParametersToObjectsContainer(
     const auto& parameter = parameters.GetParameter(i);
     if (parameter.GetName().empty()) continue;
 
-    if (gd::ParameterMetadata::IsObject(parameter.GetType())) {
+    auto &valueTypeMetadata = parameter.GetValueTypeMetadata();
+    if (valueTypeMetadata.IsObject()) {
       outputObjectsContainer.InsertNewObject(
           project,
           parameter.GetExtraInfo(),
@@ -43,7 +44,7 @@ void ParameterMetadataTools::ParametersToObjectsContainer(
       // Search "lastObjectName" in the codebase for other place where this
       // convention is enforced.
       lastObjectName = parameter.GetName();
-    } else if (gd::ParameterMetadata::IsBehavior(parameter.GetType())) {
+    } else if (valueTypeMetadata.IsBehavior()) {
       if (!lastObjectName.empty()) {
         if (outputObjectsContainer.HasObjectNamed(lastObjectName)) {
           const gd::Object& object =

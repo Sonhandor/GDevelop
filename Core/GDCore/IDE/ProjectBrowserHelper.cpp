@@ -171,10 +171,14 @@ void ProjectBrowserHelper::ExposeEventsFunctionsExtensionEvents(
     // Add (free) events functions
     for (auto &&eventsFunction : eventsFunctionsExtension.GetInternalVector()) {
       gd::ObjectsContainer parameterObjectsContainer;
+    gd::VariablesContainer parameterVariablesContainer(
+        gd::VariablesContainer::SourceType::Parameters);
+    gd::VariablesContainer propertyVariablesContainer(
+        gd::VariablesContainer::SourceType::Properties);
       auto projectScopedContainers = gd::ProjectScopedContainers::
           MakeNewProjectScopedContainersForFreeEventsFunction(
               project, eventsFunctionsExtension, *eventsFunction,
-              parameterObjectsContainer);
+              parameterObjectsContainer, parameterVariablesContainer);
 
       worker.Launch(eventsFunction->GetEvents(), projectScopedContainers);
     }
@@ -210,10 +214,15 @@ void ProjectBrowserHelper::ExposeEventsBasedBehaviorEvents(
   for (auto &&eventsFunction : behaviorEventsFunctions.GetInternalVector()) {
 
     gd::ObjectsContainer parameterObjectsContainers;
+    gd::VariablesContainer parameterVariablesContainer(
+        gd::VariablesContainer::SourceType::Parameters);
+    gd::VariablesContainer propertyVariablesContainer(
+        gd::VariablesContainer::SourceType::Properties);
     auto projectScopedContainers = gd::ProjectScopedContainers::
         MakeNewProjectScopedContainersForBehaviorEventsFunction(
             project, eventsFunctionsExtension, eventsBasedBehavior,
-            *eventsFunction, parameterObjectsContainers);
+            *eventsFunction, parameterObjectsContainers,
+            parameterVariablesContainer, propertyVariablesContainer);
 
     worker.Launch(eventsFunction->GetEvents(), projectScopedContainers);
   }
@@ -237,10 +246,15 @@ void ProjectBrowserHelper::ExposeEventsBasedObjectEvents(
   for (auto &&eventsFunction : objectEventsFunctions.GetInternalVector()) {
 
     gd::ObjectsContainer parameterObjectsContainers;
+    gd::VariablesContainer parameterVariablesContainer(
+        gd::VariablesContainer::SourceType::Parameters);
+    gd::VariablesContainer propertyVariablesContainer(
+        gd::VariablesContainer::SourceType::Properties);
     auto projectScopedContainers = gd::ProjectScopedContainers::
         MakeNewProjectScopedContainersForObjectEventsFunction(
             project, eventsFunctionsExtension, eventsBasedObject,
-            *eventsFunction, parameterObjectsContainers);
+            *eventsFunction, parameterObjectsContainers,
+            parameterVariablesContainer, propertyVariablesContainer);
 
     worker.Launch(eventsFunction->GetEvents(), projectScopedContainers);
   }
