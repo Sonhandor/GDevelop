@@ -4,7 +4,11 @@ import Fuse from 'fuse.js';
 import { Trans, t } from '@lingui/macro';
 import { type Game } from '../Utils/GDevelopServices/Game';
 import { GameCard } from './GameCard';
-import { ColumnStackLayout, ResponsiveLineStackLayout } from '../UI/Layout';
+import {
+  ColumnStackLayout,
+  LineStackLayout,
+  ResponsiveLineStackLayout,
+} from '../UI/Layout';
 import SearchBar from '../UI/SearchBar';
 import { useDebounce } from '../Utils/UseDebounce';
 import {
@@ -25,6 +29,11 @@ import {
   type FileMetadataAndStorageProviderName,
   type StorageProvider,
 } from '../ProjectsStorage';
+import RaisedButton from '../UI/RaisedButton';
+import { useResponsiveWindowSize } from '../UI/Responsive/ResponsiveWindowMeasurer';
+import Add from '../UI/CustomSvgIcons/Add';
+import TextButton from '../UI/TextButton';
+import FlatButton from '../UI/FlatButton';
 
 const pageSize = 10;
 
@@ -85,6 +94,7 @@ type Props = {|
   onRefreshGames: () => Promise<void>,
   onOpenGameId: (gameId: ?string) => void,
   onOpenProject: (file: FileMetadataAndStorageProviderName) => Promise<void>,
+  canOpen: boolean,
 |};
 
 const GamesList = ({
@@ -94,11 +104,13 @@ const GamesList = ({
   onOpenGameId,
   onOpenProject,
   storageProviders,
+  canOpen,
 }: Props) => {
   const { values, setGamesListOrderBy } = React.useContext(PreferencesContext);
   const [searchText, setSearchText] = React.useState<string>('');
   const [currentPage, setCurrentPage] = React.useState<number>(0);
   const { gamesListOrderBy: orderBy } = values;
+  const { isMobile } = useResponsiveWindowSize();
 
   const searchClient = React.useMemo(
     () =>
@@ -155,10 +167,32 @@ const GamesList = ({
 
   return (
     <ColumnStackLayout noMargin>
-      <Line noMargin>
+      <Line noMargin justifyContent="space-between">
         <Text size="section-title" noMargin>
-          <Trans>Published games</Trans>
+          <Trans>Games</Trans>
         </Text>
+        <LineStackLayout noMargin alignItems="center">
+          <RaisedButton
+            primary
+            fullWidth={!canOpen}
+            label={
+              isMobile ? <Trans>Create</Trans> : <Trans>Create new game</Trans>
+            }
+            // onClick={onOpenNewProjectSetupDialog}
+            onClick={() => {}}
+            icon={<Add fontSize="small" />}
+            id="home-create-project-button"
+          />
+          {canOpen && (
+            <FlatButton
+              label={
+                isMobile ? <Trans>Open</Trans> : <Trans>Open a project</Trans>
+              }
+              // onClick={onChooseProject}
+              onClick={() => {}}
+            />
+          )}
+        </LineStackLayout>
       </Line>
       <ResponsiveLineStackLayout expand noMargin alignItems="center">
         <SearchBarSelectField

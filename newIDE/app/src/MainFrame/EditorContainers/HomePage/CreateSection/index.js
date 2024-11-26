@@ -39,6 +39,7 @@ import {
   type FileMetadata,
   type StorageProvider,
 } from '../../../../ProjectsStorage';
+import PromotionsSlideshow from '../../../../Promotions/PromotionsSlideshow';
 
 const publishingWikiArticle = getHelpLink('/publishing/');
 
@@ -54,6 +55,7 @@ type Props = {|
   onOpenProject: (file: FileMetadataAndStorageProviderName) => Promise<void>,
   storageProviders: Array<StorageProvider>,
   closeProject: () => Promise<void>,
+  canOpen: boolean,
 
   games: ?Array<Game>,
   onRefreshGames: () => Promise<void>,
@@ -65,12 +67,13 @@ type Props = {|
   setCurrentTab: GameDetailsTab => void,
 |};
 
-const ManageSection = ({
+const CreateSection = ({
   project,
   currentFileMetadata,
   onOpenProject,
   storageProviders,
   closeProject,
+  canOpen,
 
   games,
   onRefreshGames,
@@ -97,6 +100,11 @@ const ManageSection = ({
   const { routeArguments, removeRouteArguments } = React.useContext(
     RouterContext
   );
+
+  const shouldDisplayAnnouncements =
+    !authenticatedUser.limits ||
+    !authenticatedUser.limits.capabilities.classrooms ||
+    !authenticatedUser.limits.capabilities.classrooms.hidePlayTab;
 
   React.useEffect(
     () => {
@@ -287,6 +295,13 @@ const ManageSection = ({
 
   return (
     <SectionContainer flexBody>
+      {shouldDisplayAnnouncements && (
+        <SectionRow>
+          <Column noMargin>
+            <PromotionsSlideshow />
+          </Column>
+        </SectionRow>
+      )}
       <SectionRow expand>
         {!profile ? (
           <Column expand noMargin justifyContent="center">
@@ -336,7 +351,7 @@ const ManageSection = ({
             </Paper>
           </Column>
         ) : (
-          <ColumnStackLayout>
+          <ColumnStackLayout noMargin>
             <UserEarnings />
             {!isRegisteringGame && (
               <Line>
@@ -392,6 +407,7 @@ const ManageSection = ({
                   onRefreshGames={onRefreshGames}
                   onOpenGameId={setOpenedGameId}
                   onOpenProject={onOpenProject}
+                  canOpen={canOpen}
                 />
               )
             ) : gamesFetchingError ? (
@@ -413,13 +429,13 @@ const ManageSection = ({
   );
 };
 
-const ManageSectionWithErrorBoundary = (props: Props) => (
+const CreateSectionWithErrorBoundary = (props: Props) => (
   <ErrorBoundary
     componentTitle={<Trans>Manage section</Trans>}
     scope="start-page-manage"
   >
-    <ManageSection {...props} />
+    <CreateSection {...props} />
   </ErrorBoundary>
 );
 
-export default ManageSectionWithErrorBoundary;
+export default CreateSectionWithErrorBoundary;

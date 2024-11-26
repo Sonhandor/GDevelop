@@ -9,10 +9,9 @@ import {
   type StorageProvider,
 } from '../../../ProjectsStorage';
 import GetStartedSection from './GetStartedSection';
-import BuildSection from './BuildSection';
 import LearnSection from './LearnSection';
 import PlaySection from './PlaySection';
-import ManageSection from './ManageSection';
+import CreateSection from './CreateSection';
 import StoreSection from './StoreSection';
 import { type TutorialCategory } from '../../../Utils/GDevelopServices/Tutorial';
 import { TutorialContext } from '../../../Tutorial/TutorialContext';
@@ -50,10 +49,14 @@ const getRequestedTab = (routeArguments: RouteArguments): HomeTab | null => {
     routeArguments['initial-dialog'] === 'store' // New way of opening the store
   ) {
     return 'shop';
-  } else if (routeArguments['initial-dialog'] === 'games-dashboard') {
-    return 'manage';
-  } else if (routeArguments['initial-dialog'] === 'build') {
-    return 'build';
+  } else if (
+    [
+      'games-dashboard',
+      'build', // Compatibility with old links
+      'create',
+    ].includes(routeArguments['initial-dialog'])
+  ) {
+    return 'create';
   } else if (routeArguments['initial-dialog'] === 'education') {
     return 'team-view';
   } else if (routeArguments['initial-dialog'] === 'play') {
@@ -235,7 +238,7 @@ export const HomePage = React.memo<Props>(
         ? tabRequestedAtOpening.current
         : showGetStartedSectionByDefault
         ? 'get-started'
-        : 'build';
+        : 'create';
 
       const [activeTab, setActiveTab] = React.useState<HomeTab>(initialTab);
       const [
@@ -329,7 +332,7 @@ export const HomePage = React.memo<Props>(
       // redirects to the games dashboard.
       React.useEffect(
         () => {
-          if ((activeTab === 'manage' || activeTab === 'build') && !games) {
+          if (activeTab === 'create' && !games) {
             fetchGames();
           }
         },
@@ -347,10 +350,10 @@ export const HomePage = React.memo<Props>(
       );
 
       // Refresh games list (as one could have been modified using the game dashboard
-      // in the project manager) when navigating to the "Manage" tab.
+      // in the project manager) when navigating to the "Create" tab.
       React.useEffect(
         () => {
-          if (isActive && activeTab === 'manage' && authenticated) {
+          if (isActive && activeTab === 'create' && authenticated) {
             fetchGames();
           }
         },
@@ -442,7 +445,7 @@ export const HomePage = React.memo<Props>(
 
       const onManageGame = React.useCallback((gameId: string) => {
         setOpenedGameId(gameId);
-        setActiveTab('manage');
+        setActiveTab('create');
       }, []);
 
       const canManageGame = React.useCallback(
@@ -460,8 +463,8 @@ export const HomePage = React.memo<Props>(
             <TeamProvider>
               <div style={isMobile ? styles.mobileContainer : styles.container}>
                 <div style={styles.scrollableContainer}>
-                  {activeTab === 'manage' && (
-                    <ManageSection
+                  {activeTab === 'create' && (
+                    <CreateSection
                       project={project}
                       currentFileMetadata={fileMetadata}
                       onOpenProject={onOpenRecentFile}
@@ -475,6 +478,7 @@ export const HomePage = React.memo<Props>(
                       setOpenedGameId={setOpenedGameId}
                       currentTab={gameDetailsCurrentTab}
                       setCurrentTab={setGameDetailsCurrentTab}
+                      canOpen={canOpen}
                     />
                   )}
                   {activeTab === 'get-started' && (
@@ -490,7 +494,7 @@ export const HomePage = React.memo<Props>(
                       askToCloseProject={askToCloseProject}
                     />
                   )}
-                  {activeTab === 'build' && (
+                  {/* {activeTab === 'build' && (
                     <BuildSection
                       project={project}
                       currentFileMetadata={fileMetadata}
@@ -508,7 +512,7 @@ export const HomePage = React.memo<Props>(
                       i18n={i18n}
                       closeProject={closeProject}
                     />
-                  )}
+                  )} */}
                   {activeTab === 'learn' && (
                     <LearnSection
                       onTabChange={setActiveTab}
